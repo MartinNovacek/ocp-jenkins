@@ -6,5 +6,5 @@ rm -rf /var/lib/jenkins/jenkins_config
 
 git clone https://github.com/MartinNovacek/ocp-jenkins.git#master /var/lib/jenkins/jenkins_config
 
-cd /var/lib/jenkins/jenkins_config/casc
+cd /var/lib/jenkins/jenkins_config/jenkins-init
 sh ./install.sh
