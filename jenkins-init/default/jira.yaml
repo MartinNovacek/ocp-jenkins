@@ -1,0 +1,15 @@
+unclassified:
+  jiraStepsConfig:
+    sites:
+    - credentialsId: "jenkins_jira_reader_access"
+      loginType: "CREDENTIAL"
+      name: "JIRA production"
+      readTimeout: 15000
+      timeout: 15000
+      url: "https://jirarb1ap9.rb.cz/"
+    - credentialsId: "jenkins_jira_tif_access"
+      loginType: "CREDENTIAL"
+      name: "Jira TIF autodeployment PROD"
+      readTimeout: 15000
+      timeout: 15000
+      url: "https://jirarb1ap9.rb.cz/"

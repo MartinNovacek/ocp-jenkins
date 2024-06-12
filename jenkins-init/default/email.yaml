@@ -1,0 +1,29 @@
+unclassified:
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: true
+    allowedDomains: "rb.cz"
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+
+      Check console output at $BUILD_URL to view the results.
+    defaultContentType: "text/plain"
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultSuffix: "@rb.cz"
+    defaultTriggerIds:
+    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    listId: "<ci-notifications.rb.cz>"
+    mailAccount:
+      smtpHost: "czcrbp10.rb.cz"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: -1
+    precedenceBulk: true
+    watchingEnabled: false
+  mailer:
+    charset: "UTF-8"
+    defaultSuffix: "@rb.cz"
+    smtpHost: "czcrbp10.rb.cz"
+    useSsl: false
+    useTls: false

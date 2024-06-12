@@ -1,0 +1,220 @@
+unclassified:
+  globalConfigFiles:
+    configs:
+    - groovyScript:
+        content: |
+          node (){
+              buildPlugin.buildWithMavenPipelineCommon()
+          }
+        id: "common-build-no-params.groovy"
+        name: "GroovyConfig"
+        providerId: "org.jenkinsci.plugins.configfiles.groovy.GroovyScript"
+    - groovyScript:
+        content: |+
+          node (){
+            def openShiftNameSpace = readFile file:"/var/run/secrets/kubernetes.io/serviceaccount/namespace"      
+            log.info "openShiftNameSpace: ^${openShiftNameSpace}"
+            withFolderProperties{
+              log.info "Managed file common-build.groovy executed"    
+              log.info "env: ^${env.OPENSHIFT_BUILD_NAMESPACE}"   
+              buildPlugin.buildWithMavenPipelineCommon(env.appId, env.applicationConfigJson,openShiftNameSpace)
+            }
+          }
+        id: "common-build.groovy"
+        name: "GroovyConfig"
+        providerId: "org.jenkinsci.plugins.configfiles.groovy.GroovyScript"
+    - globalMavenSettings:
+        comment: "Maven global settings for RB CI environment"
+        content: |-
+          <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <pluginGroups>
+            </pluginGroups>
+            <proxies>
+            </proxies>
+            <servers>
+              <server>
+                <id>rb-mvn-mirror</id>
+                <username>repouser</username>
+                <password>repopwd</password>
+              </server>
+            </servers>
+            <mirrors>
+              <mirror>
+                <id>rb-mvn-mirror</id>
+                <mirrorOf>*</mirrorOf>
+                <name>RB mirror</name>
+                <url>https://artifactory.rb.cz/artifactory/rb-mvn-mirror/</url>
+              </mirror>
+            </mirrors>
+            <profiles>
+              <profile>
+                <id>RB</id>
+                <!--Enable snapshots for the built in central repo to direct -->
+                <!--all requests to nexus via the mirror -->
+                <repositories>
+                  <repository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases><enabled>true</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                  </repository>
+                </repositories>
+                <pluginRepositories>
+                  <pluginRepository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases><enabled>true</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                  </pluginRepository>
+                </pluginRepositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <!--make the profile active all the time -->
+              <activeProfile>RB</activeProfile>
+            </activeProfiles>
+          </settings>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        id: "63d50389-69c6-42c7-891e-08eeec904dcf"
+        isReplaceAll: true
+        name: "Global RB settings"
+        serverCredentialMappings:
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "deployment-repo"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "artifactory-upstream"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "central-release-repo"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "central-plugin-release-repo"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "central-snapshot-repo"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "central-plugin-snapshot-repo"
+        - credentialsId: "jenkins_artifactory_access"
+          serverId: "rb-mvn-mirror"

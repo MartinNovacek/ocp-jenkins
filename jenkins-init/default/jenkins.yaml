@@ -1,0 +1,71 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  disableRememberMe: false
+  labelString: "master"
+  markupFormatter:
+    rawHtml:
+      disableSyntaxHighlighting: false
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 10
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 1
+  remotingSecurity:
+    enabled: false
+  scmCheckoutRetryCount: 0
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://artifactory.rb.cz/artifactory/central-mvn-jenkins-plugin/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: -1
+unclassified:
+  artifactoryBuilder:
+    jfrogInstances:
+    - artifactoryUrl: "https://artifactory.rb.cz/artifactory"
+      bypassProxy: false
+      connectionRetry: 3
+      deployerCredentialsConfig:
+        credentialsId: "jenkins_artifactory_access"
+        overridingCredentials: false
+      deploymentThreads: 3
+      distributionUrl: "https://artifactory.rb.cz/artifactory/distribution"
+      instanceId: "artifactory"
+      platformUrl: "https://artifactory.rb.cz/artifactory"
+      timeout: 300
+    useCredentialsPlugin: true
+  bitbucketEndpointConfiguration:
+    endpoints:
+    - bitbucketServerEndpoint:
+        credentialsId: "jenkins_bitbucket_access"
+        displayName: "Bitbucket RB"
+        manageHooks: true
+        serverUrl: "https://git.rb.cz/bitbucket"
+        webhookImplementation: NATIVE
+  gitSCM:
+    createAccountBasedOnEmail: false
+  mavenModuleSet:
+    localRepository: "default"
+  pollSCM:
+    pollingThreadCount: 10
+  simple-theme-plugin:
+    elements:
+      - cssUrl:
+          url: "https://${JENKINS_SERVICE_NAME_EXT}.${JENKINS_DNS_DOMAIN}/userContent/jenkins-custom.css"

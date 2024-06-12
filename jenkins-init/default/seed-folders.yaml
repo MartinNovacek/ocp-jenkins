@@ -1,0 +1,2 @@
+jobs:
+  - file: "${CASC_JENKINS_CONFIG}/ci-cd-seed-folder.groovy"

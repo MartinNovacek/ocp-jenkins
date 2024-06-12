@@ -1,0 +1,17 @@
+jenkins:
+  securityRealm:
+    oic:
+      authorizationServerUrl: "${OIDC_SERVER_URL}/auth"
+      automanualconfigure: "manual"
+      clientId: "${OIDC_CLIENT_ID}"
+      clientSecret: "${decodeBase64:${OIDC_CLIENT_SECRET}}"
+      disableSslVerification: false
+      emailFieldName: "email"
+      fullNameFieldName: "name"
+      groupsFieldName: "groups"
+      logoutFromOpenidProvider: false
+      scopes: "profile email openid"
+      tokenAuthMethod: "client_secret_basic"
+      tokenServerUrl: "${OIDC_SERVER_URL}/token"
+      userInfoServerUrl: "${OIDC_SERVER_URL}/userinfo"
+      userNameField: "preferred_username"

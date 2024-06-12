@@ -1,0 +1,89 @@
+jobs:
+  - script: >
+      folder('service') {
+        displayName('Service')
+        description("Service jobs for this Jenkins instance")
+      }
+  - script: >
+      job('service/reload-configuration') {
+        displayName('Reload configuration')
+        description("Reload configuration for this Jenkins instance. This freestyle job is separate to circumvent JobDSL breakage when configuration reload is called directly from pipeline")
+        logRotator {
+          numToKeep(5)
+        }
+        steps {
+          systemGroovyCommand("""\
+            import io.jenkins.plugins.casc.ConfigurationAsCode;
+            ConfigurationAsCode.get().configure()
+          """.stripIndent()) {
+              sandbox(false)
+          }
+        }
+      }
+  - script: >
+      pipelineJob('service/update') {
+        displayName('Update configuration')
+        description("Update configuration for this Jenkins instance")
+        parameters {
+          stringParam('ENV_BRANCH_NAME', 'master', 'Feature branch to be used for the Jenkins configuration.')
+        }
+        logRotator {
+          numToKeep(5)
+        }
+        definition {
+          cps {
+            script("""\
+              node('master') {
+                stage('Checkout environment') {
+                  cleanWs()
+                  git changelog: false,
+                    credentialsId: 'jenkins_bitbucket_access',
+                    poll: false,
+                    url: 'https://git.rb.cz/bitbucket/scm/eaas/openshift-jenkins-casc.git',
+                    branch: env.ENV_BRANCH_NAME
+                }
+                stage ('Run configuration as code') {
+                   sh '''
+                     rm -rf /var/lib/jenkins/jenkins_config
+                     cp -r . /var/lib/jenkins/jenkins_config
+                     cd /var/lib/jenkins/jenkins_config/casc
+                     sh ./install.sh
+                     cd /var/lib/jenkins/jenkins_config/jaac
+                   '''
+                   build job: 'reload-configuration', wait: false
+                }
+              }""".stripIndent()
+            )
+          }
+        }
+      }
+  - script: >
+      freeStyleJob('service/cleanup-jenkins') {
+        displayName('Cleanup-jenkins')
+        description("Cleanup for this Jenkins instance.")
+        logRotator {
+          numToKeep(5)
+        }
+        triggers {
+          cron('0 2 * * *')
+        }
+        steps {
+          shell('''#!/bin/bash
+
+        THRESHOLD=85
+        JENKINS_HOME_PATH="/var/lib/jenkins/"
+
+        current_usage=$(df "$JENKINS_HOME_PATH" | grep / | awk '{ print $5 }' | sed 's/%//g')
+        echo "Aktuální využití $current_usage %"
+        current_usage_inodes=$(df -i "$JENKINS_HOME_PATH" | grep / | awk '{ print $5 }' | sed 's/%//g')
+        echo "Aktuální využití inodes $current_usage %"
+        
+        if [ "$current_usage" -gt "$THRESHOLD" ] || [ "$current_usage_inodes" -gt "$THRESHOLD" ] ; then
+            echo "Využití disku je vyšší než $THRESHOLD %, mažu staré konfigurační soubory..."
+            rm -rf /var/lib/jenkins/config-history/*
+        else
+            echo "Využití disku je v normálu."
+        fi
+        ''')
+        }
+      }

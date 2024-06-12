@@ -1,0 +1,2 @@
+groovy:
+  - file: '/var/lib/jenkins/jenkins_config/jaac/user-content.groovy'
