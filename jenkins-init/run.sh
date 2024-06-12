@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 export GIT_COMMITER_NAME="jenkins-ci"
 export GIT_COMMITER_MAIL="jenkins-ci@ocp.cz"
 
